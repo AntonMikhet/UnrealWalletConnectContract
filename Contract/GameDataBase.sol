@@ -30,21 +30,13 @@ contract gameDB{
         address gameTransResiever;
         uint    gameTransTimeStamp;
         uint    gameTransAmount;
-        bool    gameTransStatus;
     }
     mapping(address => transactionData[]) public transactionDB;
 
-    mapping(address => mapping(uint256 => transactionData)) public trans;
-    mapping(address => uint256) public tr_count;
 
     function getAllTransactionData() public view returns (transactionData[] memory){
-        transactionData[] memory transit;
+            return transactionDB[msg.sender];
 
-        for(uint256 i = 0; i < tr_count[msg.sender]; i++){
-            transit[i] = trans[msg.sender][i];
-        }
-        
-        return transit;
     }
 
 
@@ -61,7 +53,7 @@ contract gameDB{
     }
 
 
-    function inGameTransaction (address _reciever, uint _value, string memory _description) public{
+    function inGameTransaction (address _reciever, uint _value, string memory _description) public {
         require(users[msg.sender].userMoneyAmount - _value >= 0, "You havent game money");
         require(users[_reciever].userWallet != address(0), "This account does not exist");
         require(_value > 0, "Incorrect amount");
@@ -75,8 +67,7 @@ contract gameDB{
             msg.sender,
             _reciever,
             block.timestamp,
-            _value,
-            true
+            _value
         ));
 
         sendToDB(_reciever, _value, users[_reciever].userNick);

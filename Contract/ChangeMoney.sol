@@ -20,8 +20,26 @@ contract changeMoney is gameDB {
         owner = msg.sender;
     }
 
+    function _transfer(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) internal virtual {
+        require(sender != address(0), "ERC20: transfer from the zero address");
+        require(recipient != address(0), "ERC20: transfer to the zero address");
+
+        uint256 senderBalance = sender.balance;
+        
+        require(senderBalance >= amount, "ERC20: transfer amount exceeds balance");
+        unchecked {
+                senderBalance = senderBalance - amount;
+        }
 
 
+
+
+        
+    }
     function getMoneyToConvertation () public payable {  // Function to convert token into game currency and then send it to the blockchain database
             sendToDB(msg.sender, convertationToGameMoney(msg.value), users[msg.sender].userNick );
             
@@ -35,6 +53,8 @@ contract changeMoney is gameDB {
     function getContractBalance () public view onlyOwner returns(uint){
         return address(this).balance;
     }
+
+
 
 }
     
